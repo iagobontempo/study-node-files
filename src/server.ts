@@ -1,9 +1,9 @@
-const express = require('express');
-const path = require('path');
-const multer = require('multer');
-const fs = require('fs');
-const { exec, execFile } = require('child_process'); //Para executar comandos do ubuntu
-const cwebp = require('cwebp-bin');
+import express from 'express';
+import path from 'path';
+import multer from 'multer';
+import fs from 'fs';
+import { exec, execFile } from 'child_process'; //Para executar comandos do ubuntu
+import cwebp from 'cwebp-bin';
 
 const app = express();
 
@@ -38,7 +38,7 @@ app.post('/profile', upload.single('avatar'), (req, res) => {
 app.get('/delete/:name', (req, res) => {
     try {
         let arquivo = req.params.name;
-        fs.unlinkSync((__dirname, `./uploads/${arquivo}`))
+        fs.unlinkSync(path.resolve(__dirname, `./uploads/${arquivo}`))
         res.send('DELETE SUCESS!').status(200);
     } catch (err) {
         console.log(err);
@@ -50,7 +50,7 @@ app.get('/compress/:name', (req, res) => {
     let arquivo = req.params.name;
 
     execFile(cwebp,
-        [`${(__dirname, './uploads/' + arquivo)}`, '-o', `${(__dirname, './uploads/compressed/' + arquivo + '.webp')}`], err => {
+        [`${path.resolve(__dirname, './uploads/' + arquivo)}`, '-o', `${path.resolve(__dirname, './uploads/compressed/' + arquivo + '.webp')}`], err => {
             if (err) {
                 throw err;
             }
@@ -78,7 +78,7 @@ app.get('/test', (req, res) => {
 
 app.get('/view', (req, res) => {
     try {
-        let files = fs.readdirSync((__dirname, './uploads'));
+        let files = fs.readdirSync(path.resolve(__dirname, './uploads'));
         files.map((value) => {
             console.log(value);
         })
